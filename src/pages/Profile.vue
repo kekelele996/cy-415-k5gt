@@ -55,6 +55,8 @@
       </div>
       <EmptyState v-else title="还没有发布物品" description="发布一件闲置后会出现在这里" mark="物" />
     </section>
+
+    <PointWalletPanel :user-id="currentUser.id" />
   </section>
 </template>
 
@@ -64,6 +66,7 @@ import { computed, reactive, ref, watch, watchEffect } from 'vue';
 import AvatarUploader from '@/components/common/AvatarUploader.vue';
 import EmptyState from '@/components/common/EmptyState.vue';
 import ItemCard from '@/components/common/ItemCard.vue';
+import PointWalletPanel from '@/components/common/PointWalletPanel.vue';
 import UserBrief from '@/components/common/UserBrief.vue';
 import { ItemStatus } from '@/constants/item';
 import { useAuth } from '@/hooks/useAuth';

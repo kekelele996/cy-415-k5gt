@@ -23,3 +23,9 @@ export interface ImageFilePayload {
   name: string;
   dataUrl: string;
 }
+
+/**
+ * 一次结算事务内需要原子持久化的存储快照。
+ * key 为 STORAGE_KEYS 中的键，value 为该键要整体写入的 payload。
+ */
+export type TransactionSnapshot = Record<string, unknown>;
