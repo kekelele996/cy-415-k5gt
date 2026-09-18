@@ -14,6 +14,7 @@ const seedExchanges: Exchange[] = [
     to_item_id: 'item_camera',
     status: ExchangeStatus.PENDING,
     message: '露营椅换拍立得，可以同城当面交换。',
+    deposit_settlement_id: null,
     created_at: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
     updated_at: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
   },
@@ -37,6 +38,7 @@ export const exchangeApi = {
       ...draft,
       id: storage.createId('exchange'),
       status: draft.status ?? ExchangeStatus.PENDING,
+      deposit_settlement_id: draft.deposit_settlement_id ?? null,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
@@ -44,6 +46,7 @@ export const exchangeApi = {
     return nextExchange;
   },
 
+  /** 仅用于无积分变动的状态迁移（拒绝）；同意/完成/取消由 depositApi 原子处理 */
   async transition(id: string, status: ExchangeStatus): Promise<Exchange> {
     const exchanges = await this.list();
     const current = exchanges.find((item) => item.id === id);
@@ -52,10 +55,6 @@ export const exchangeApi = {
       throw new Error('当前状态不允许该操作');
     }
     const nextExchange: Exchange = { ...current, status, updated_at: new Date().toISOString() };
-    if (status === ExchangeStatus.COMPLETED) {
-      await itemApi.setStatus(current.from_item_id, ItemStatus.EXCHANGED);
-      await itemApi.setStatus(current.to_item_id, ItemStatus.EXCHANGED);
-    }
     await storage.set(
       STORAGE_KEYS.exchanges,
       exchanges.map((item) => (item.id === id ? nextExchange : item)),

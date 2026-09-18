@@ -35,6 +35,7 @@
 
       <div class="profile-side">
         <UserBrief :user="{ ...currentUser, ...form }" />
+        <PointsWallet />
         <div class="stats-row">
           <span>发布 {{ myItems.length }}</span>
           <span>可交换 {{ availableCount }}</span>
@@ -64,6 +65,7 @@ import { computed, reactive, ref, watch, watchEffect } from 'vue';
 import AvatarUploader from '@/components/common/AvatarUploader.vue';
 import EmptyState from '@/components/common/EmptyState.vue';
 import ItemCard from '@/components/common/ItemCard.vue';
+import PointsWallet from '@/components/common/PointsWallet.vue';
 import UserBrief from '@/components/common/UserBrief.vue';
 import { ItemStatus } from '@/constants/item';
 import { useAuth } from '@/hooks/useAuth';

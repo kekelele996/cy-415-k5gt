@@ -594,6 +594,123 @@ textarea {
   gap: 8px;
 }
 
+.exchange-card__actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.exchange-card__cancel {
+  border-color: color-mix(in oklch, var(--rs-accent), transparent 30%) !important;
+  color: var(--rs-accent) !important;
+}
+
+.exchange-card__deposit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  border-radius: 7px;
+  padding: 10px 12px;
+  background: color-mix(in oklch, var(--rs-accent), transparent 90%);
+  font-size: 0.85rem;
+}
+
+.exchange-card__deposit .deposit-tag {
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-weight: 700;
+}
+
+.deposit-confirm em {
+  font-style: normal;
+  color: var(--rs-primary);
+  font-weight: 700;
+}
+
+.points-wallet {
+  display: flex;
+  gap: 10px;
+}
+
+.points-wallet div {
+  display: grid;
+  gap: 2px;
+  min-width: 104px;
+  border: 1px solid var(--rs-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: color-mix(in oklch, var(--rs-surface), transparent 1%);
+  text-align: right;
+}
+
+.points-wallet span {
+  color: color-mix(in oklch, var(--rs-text), transparent 40%);
+  font-size: 0.78rem;
+}
+
+.points-wallet strong {
+  font-size: 1.4rem;
+  color: var(--rs-primary);
+}
+
+.points-ledger {
+  display: grid;
+  gap: 12px;
+}
+
+.points-ledger h2 {
+  margin: 0;
+}
+
+.points-ledger__list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.points-ledger__list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--rs-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: color-mix(in oklch, var(--rs-surface), transparent 1%);
+}
+
+.points-ledger__list li div {
+  display: grid;
+  gap: 3px;
+}
+
+.points-ledger__list small {
+  color: color-mix(in oklch, var(--rs-text), transparent 42%);
+}
+
+.points-ledger__delta {
+  font-weight: 800;
+  min-width: 84px;
+  text-align: right;
+}
+
+.points-ledger__delta.is-plus {
+  color: #2f7548;
+}
+
+.points-ledger__delta.is-freeze,
+.points-ledger__delta.is-neutral {
+  color: var(--rs-accent);
+}
+
+.points-ledger__balance {
+  min-width: 150px;
+  text-align: right;
+}
+
 .profile-side {
   display: grid;
   gap: 18px;

@@ -5,6 +5,7 @@
         <p class="eyebrow">交换管理</p>
         <h1>让每一次交换都有状态</h1>
       </div>
+      <PointsWallet />
     </div>
 
     <div class="stats-row">
@@ -12,7 +13,10 @@
       <span>待确认 {{ stats.pending }}</span>
       <span>已同意 {{ stats.accepted }}</span>
       <span>已完成 {{ stats.completed }}</span>
+      <span>已取消 {{ stats.cancelled }}</span>
     </div>
+
+    <p class="form-note">{{ DEPOSIT_MESSAGES.freezeHint }}；{{ DEPOSIT_MESSAGES.bothConfirmHint }}</p>
 
     <div class="segmented">
       <button :class="{ active: tab === 'sent' }" type="button" @click="tab = 'sent'">我发起的</button>
@@ -32,9 +36,12 @@
         :exchange="exchange"
         :items="itemStore.items"
         :users="authStore.users"
+        :settlements="depositStore.settlements"
+        :busy="exchangeStore.isSettling(exchange.id)"
         @accept="exchangeStore.accept"
         @reject="exchangeStore.reject"
-        @complete="completeExchange"
+        @complete="exchangeStore.complete"
+        @cancel="cancelExchange"
       />
     </div>
     <EmptyState
@@ -43,16 +50,22 @@
       :description="PAGE_MESSAGES.exchangeEmpty"
       mark="换"
     />
+
+    <PointsLedger />
   </section>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { showConfirmDialog } from 'vant';
 
 import EmptyState from '@/components/common/EmptyState.vue';
 import ExchangeCard from '@/components/common/ExchangeCard.vue';
-import { EXCHANGE_STATUS_OPTIONS, ExchangeStatus } from '@/constants/exchange';
-import { PAGE_MESSAGES } from '@/constants/messages';
+import PointsLedger from '@/components/common/PointsLedger.vue';
+import PointsWallet from '@/components/common/PointsWallet.vue';
+import { EXCHANGE_STATUS_OPTIONS } from '@/constants/exchange';
+import { DEPOSIT_MESSAGES, PAGE_MESSAGES } from '@/constants/messages';
+import { useDepositStore } from '@/stores/depositStore';
 import { useExchangeStats } from '@/hooks/useExchangeStats';
 import { useAuthStore } from '@/stores/authStore';
 import { useExchangeStore } from '@/stores/exchangeStore';
@@ -61,6 +74,7 @@ import { useItemStore } from '@/stores/itemStore';
 const authStore = useAuthStore();
 const itemStore = useItemStore();
 const exchangeStore = useExchangeStore();
+const depositStore = useDepositStore();
 const tab = ref<'sent' | 'received'>('sent');
 
 const mine = computed(() => {
@@ -73,10 +87,17 @@ const mine = computed(() => {
 const visibleExchanges = computed(() => mine.value);
 const stats = useExchangeStats(() => exchangeStore.exchanges);
 
-const completeExchange = async (id: string) => {
-  await exchangeStore.complete(id);
-  itemStore.items = itemStore.items.map((item) => item);
+const cancelExchange = async (id: string) => {
+  try {
+    await showConfirmDialog({
+      title: '取消交换',
+      message: DEPOSIT_MESSAGES.cancelHint,
+      confirmButtonText: '确认取消',
+      cancelButtonText: '再想想',
+    });
+  } catch {
+    return;
+  }
+  await exchangeStore.cancel(id);
 };
-
-void ExchangeStatus.PENDING;
 </script>

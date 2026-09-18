@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 
+import { DepositStatus, POINTS_FLOW_LABELS, PointsFlowType } from '@/constants/deposit';
 import { ExchangeStatus } from '@/constants/exchange';
 import { ItemCondition, ItemStatus } from '@/constants/item';
 import { STATUS_MESSAGE_MAP } from '@/constants/messages';
@@ -21,8 +22,29 @@ export const formatExchangeStatus = (status: ExchangeStatus) => {
     [ExchangeStatus.ACCEPTED]: '已同意',
     [ExchangeStatus.REJECTED]: '已拒绝',
     [ExchangeStatus.COMPLETED]: '已完成',
+    [ExchangeStatus.CANCELLED]: '已取消',
   };
   return map[status];
+};
+
+export const formatDepositStatus = (status: DepositStatus) => {
+  const map: Record<DepositStatus, string> = {
+    [DepositStatus.HELD]: '诚信金冻结中',
+    [DepositStatus.RELEASED]: '诚信金已解冻',
+    [DepositStatus.FORFEITED]: '诚信金已赔付',
+  };
+  return map[status];
+};
+
+export const formatPointsFlowType = (type: PointsFlowType) => POINTS_FLOW_LABELS[type] ?? '积分变动';
+
+export const formatPointsDelta = (availableDelta: number, frozenDelta: number) => {
+  if (frozenDelta > 0) return `冻结 ${frozenDelta}`;
+  if (frozenDelta < 0 && availableDelta > 0)
+    return availableDelta === -frozenDelta ? `解冻 ${-frozenDelta}` : `可用 +${availableDelta} / 冻结 ${frozenDelta}`;
+  if (availableDelta > 0) return `+${availableDelta}`;
+  if (availableDelta < 0) return `${availableDelta}`;
+  return frozenDelta < 0 ? `赔付 ${frozenDelta}` : '0';
 };
 
 export const formatCondition = (condition: ItemCondition) => {
@@ -44,7 +66,8 @@ export const formatCreditLevel = (score: number) => {
 
 export const statusToneClass = (status: ItemStatus | ExchangeStatus) => {
   if (status === ItemStatus.AVAILABLE || status === ExchangeStatus.ACCEPTED) return 'status-good';
-  if (status === ItemStatus.OFFLINE || status === ExchangeStatus.REJECTED) return 'status-muted';
+  if (status === ItemStatus.OFFLINE || status === ExchangeStatus.REJECTED || status === ExchangeStatus.CANCELLED)
+    return 'status-muted';
   if (status === ItemStatus.EXCHANGED || status === ExchangeStatus.COMPLETED) return 'status-done';
   return 'status-wait';
 };
